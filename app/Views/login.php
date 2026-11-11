@@ -57,8 +57,14 @@
     <div class="login-box">
 
         <h2>Library Admin Login</h2>
+		
+		<?php if (session()->getFlashdata('error')): ?>
+    <p style="color: red; text-align: center;">
+        <?= session()->getFlashdata('error') ?>
+    </p>
+<?php endif; ?>
 
-        <form method="post" action="<?= base_url('login') ?>">
+        <<form method="post" action="<?= base_url('login/authenticate') ?>">
 
             <input type="text" name="username"
                    placeholder="Enter Username" required>
