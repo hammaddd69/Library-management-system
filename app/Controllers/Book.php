@@ -95,6 +95,21 @@ public function update($id)
         ->with('success', 'Book updated successfully!');
 }
 
+// Delete a book
+public function delete($id)
+{
+    if (!session()->get('isLoggedIn')) {
+        return redirect()->to(base_url('login'));
+    }
+
+    $bookModel = new BookModel();
+
+    $bookModel->delete($id);
+
+    return redirect()->to(base_url('books/list'))
+        ->with('success', 'Book deleted successfully!');
+}
+
 
 }
 

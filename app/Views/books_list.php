@@ -89,7 +89,27 @@
 				
 				// adding the edit book option for each book	
 				<td>
+				
+    <td>
+	
+<td>
+
     <a href="<?= base_url('books/edit/' . $book['id']) ?>">Edit</a>
+
+    
+
+    <form action="<?= base_url('books/delete/' . $book['id']) ?>"
+          method="post" style="display:inline;"
+          onsubmit="return confirm('Are you sure you want to delete this book?')">
+
+        <?= csrf_field() ?>
+
+        <button type="submit">Delete</button>
+
+    </form>
+	      
+</td>
+</td>
 </td>
             </tr>
             <?php endforeach; ?>
