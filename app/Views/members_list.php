@@ -84,10 +84,22 @@
                 <td><?= esc($member['phone']) ?></td>
                 <td><?= esc($member['address']) ?></td>
                 <td><?= esc($member['status']) ?></td>
-				<td>
+	<td>
     <a href="<?= base_url('members/edit/' . $member['id']) ?>">
         Edit
     </a>
+
+    |
+
+    <form action="<?= base_url('members/delete/' . $member['id']) ?>"
+          method="post" style="display:inline;"
+          onsubmit="return confirm('Are you sure you want to delete this member?')">
+
+        <?= csrf_field() ?>
+
+        <button type="submit">Delete</button>
+
+    </form>
 </td>
             </tr>
         <?php endforeach; ?>

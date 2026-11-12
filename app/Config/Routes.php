@@ -34,3 +34,4 @@ $routes->post('members/save', 'Member::save');
 $routes->get('members/list', 'Member::list');
 $routes->get('members/edit/(:num)', 'Member::edit/$1');
 $routes->post('members/update/(:num)', 'Member::update/$1');
+$routes->post('members/delete/(:num)', 'Member::delete/$1');

@@ -88,4 +88,19 @@ public function update($id)
     return redirect()->to(base_url('members/list'))
         ->with('success', 'Member updated successfully!');
 }
+// Delete a member
+public function delete($id)
+{
+    if (!session()->get('isLoggedIn')) {
+        return redirect()->to(base_url('login'));
+    }
+
+    $memberModel = new MemberModel();
+
+    $memberModel->delete($id);
+
+    return redirect()->to(base_url('members/list'))
+        ->with('success', 'Member deleted successfully!');
+}
+
 }
