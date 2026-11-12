@@ -26,8 +26,11 @@ $routes->get('books/edit/(:num)', 'Book::edit/$1');
 $routes->post('books/update/(:num)', 'Book::update/$1');
 $routes->post('books/delete/(:num)', 'Book::delete/$1');
 $routes->get('books/search', 'Book::search');
-
-
-
-
 //this sends the updated information to the server using POST method
+
+// Member management this tells codelgniter when administrator opens the registration page,submits member form or view member list
+$routes->get('members', 'Member::index');
+$routes->post('members/save', 'Member::save');
+$routes->get('members/list', 'Member::list');
+$routes->get('members/edit/(:num)', 'Member::edit/$1');
+$routes->post('members/update/(:num)', 'Member::update/$1');
