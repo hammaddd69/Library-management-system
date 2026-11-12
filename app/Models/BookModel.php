@@ -20,4 +20,13 @@ class BookModel extends Model
         'quantity',
         'available'
     ];
+	
+	public function searchBooks($keyword)
+{
+    return $this->groupStart()
+                ->like('title', $keyword)
+                ->orLike('author', $keyword)
+                ->groupEnd()
+                ->findAll();
+}
 }

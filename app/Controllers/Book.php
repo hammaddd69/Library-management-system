@@ -54,6 +54,24 @@ class Book extends BaseController
         return view('books_list', $data);
     }
 	
+	// Search for books
+public function search()
+{
+    if (!session()->get('isLoggedIn')) {
+        return redirect()->to(base_url('login'));
+    }
+
+    $keyword = $this->request->getGet('keyword');
+
+    $bookModel = new BookModel();
+
+    $data['books'] = $bookModel->searchBooks($keyword);
+
+    $data['keyword'] = $keyword;
+
+    return view('books_list', $data);
+}
+	
 	// this part receives the book id find the book in database checks that	the admin is logged in and Open the Edit Book page
 public function edit($id)
 {

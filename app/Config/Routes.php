@@ -25,4 +25,9 @@ $routes->get('books/list', 'Book::list');
 $routes->get('books/edit/(:num)', 'Book::edit/$1');
 $routes->post('books/update/(:num)', 'Book::update/$1');
 $routes->post('books/delete/(:num)', 'Book::delete/$1');
+$routes->get('books/search', 'Book::search');
+
+
+
+
 //this sends the updated information to the server using POST method

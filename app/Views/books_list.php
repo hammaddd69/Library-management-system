@@ -61,6 +61,17 @@
     <div class="container">
 
         <h2>Book List</h2>
+		
+		<form action="<?= base_url('books/search') ?>" method="get">
+
+    <input type="text" name="keyword"
+           placeholder="Search by title or author"
+           value="<?= esc($keyword ?? '') ?>">
+
+    <button type="submit">Search</button>
+
+</form>
+		
 
         <table>
             <tr>
@@ -87,8 +98,9 @@
                 <td><?= esc($book['quantity']) ?></td>
                 <td><?= esc($book['available']) ?></td>
 				
-				// adding the edit book option for each book	
+					
 				<td>
+				
 				
     <td>
 	
