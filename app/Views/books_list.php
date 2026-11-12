@@ -86,6 +86,11 @@
                 <td><?= esc($book['published_year']) ?></td>
                 <td><?= esc($book['quantity']) ?></td>
                 <td><?= esc($book['available']) ?></td>
+				
+				// adding the edit book option for each book	
+				<td>
+    <a href="<?= base_url('books/edit/' . $book['id']) ?>">Edit</a>
+</td>
             </tr>
             <?php endforeach; ?>
 

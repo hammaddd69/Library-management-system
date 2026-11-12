@@ -2,6 +2,8 @@
 
 use CodeIgniter\Router\RouteCollection;
 
+// these links tells codelgniter which url should open specific page
+
 /**
  * @var RouteCollection $routes
  */
@@ -20,3 +22,7 @@ $routes->get('dashboard', 'Dashboard::index');
 $routes->get('books', 'Book::index');
 $routes->post('books/save', 'Book::save');
 $routes->get('books/list', 'Book::list');
+$routes->get('books/edit/(:num)', 'Book::edit/$1');
+$routes->post('books/update/(:num)', 'Book::update/$1');
+
+//this sends the updated information to the server using POST method
