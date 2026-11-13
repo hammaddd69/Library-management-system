@@ -35,3 +35,9 @@ $routes->get('members/list', 'Member::list');
 $routes->get('members/edit/(:num)', 'Member::edit/$1');
 $routes->post('members/update/(:num)', 'Member::update/$1');
 $routes->post('members/delete/(:num)', 'Member::delete/$1');
+
+//Borrow managmnet
+$routes->get('borrow', 'Borrow::index');
+$routes->post('borrow/save', 'Borrow::save');
+$routes->get('borrow/list', 'Borrow::list');
+$routes->post('borrow/return/(:num)', 'Borrow::returnBook/$1');
