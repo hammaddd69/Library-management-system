@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,22 +74,27 @@
             <?= csrf_field() ?>
 
             <label>Book Title</label>
-            <input type="text" name="title" required>
+			<input type="text" name="title" id="title">
 
             <label>Author</label>
-            <input type="text" name="author" required>
+            <input type="text" name="author" id="author">
 
             <label>ISBN</label>
-            <input type="text" name="isbn">
+           <input type="text" name="isbn" id="isbn">
+		   <button type="button" id="lookupBook">
+    Find Book Details
+</button>
+
+<p id="apiMessage"></p>
 
             <label>Category</label>
             <input type="text" name="category">
 
             <label>Publisher</label>
-            <input type="text" name="publisher">
+            <input type="text" name="publisher" id="publisher">
 
             <label>Published Year</label>
-            <input type="number" name="published_year">
+            <input type="text" name="published_year" id="published_year">
 
             <label>Quantity</label>
             <input type="number" name="quantity" min="1" value="1" required>
@@ -98,6 +104,57 @@
         </form>
 
     </div>
+	<script>
+document.getElementById('lookupBook').addEventListener('click', function() {
+
+    const isbn = document.getElementById('isbn').value.trim();
+    const message = document.getElementById('apiMessage');
+
+    if (isbn === '') {
+        message.textContent = 'Please enter an ISBN first.';
+        return;
+    }
+
+    message.textContent = 'Searching for book details...';
+
+    fetch('https://openlibrary.org/isbn/' + encodeURIComponent(isbn) + '.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Book not found.');
+            }
+            return response.json();
+        })
+        .then(book => {
+            document.getElementById('title').value = book.title || '';
+
+            document.getElementById('publisher').value =
+                book.publishers ? book.publishers[0] : '';
+
+            document.getElementById('published_year').value =
+                book.publish_date ? book.publish_date.match(/\d{4}/)?.[0] || '' : '';
+
+            if (book.authors && book.authors.length > 0) {
+                return Promise.all(
+                    book.authors.map(author =>
+                        fetch('https://openlibrary.org' + author.key + '.json')
+                            .then(response => response.json())
+                            .then(data => data.name)
+                    )
+                );
+            }
+
+            return [];
+        })
+        .then(authors => {
+            document.getElementById('author').value = authors.join(', ');
+            message.textContent = 'Book details found successfully!';
+        })
+        .catch(error => {
+            message.textContent = error.message;
+        });
+
+});
+</script>
 
 </body>
 </html>
