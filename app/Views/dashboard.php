@@ -60,6 +60,29 @@
 
         <div class="card">
             <h2>Welcome, <?= esc(session()->get('username')) ?>!</h2>
+			<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 25px;">
+
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; min-width: 150px;">
+        <h3>Total Books</h3>
+        <h2><?= $totalBooks ?></h2>
+    </div>
+
+    <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; min-width: 150px;">
+        <h3>Total Members</h3>
+        <h2><?= $totalMembers ?></h2>
+    </div>
+
+    <div style="background: #fff3e0; padding: 20px; border-radius: 8px; min-width: 150px;">
+        <h3>Borrowed Books</h3>
+        <h2><?= $borrowedBooks ?></h2>
+    </div>
+
+    <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; min-width: 150px;">
+        <h3>Returned Books</h3>
+        <h2><?= $returnedBooks ?></h2>
+    </div>
+
+</div>
             <p>You have successfully logged in.</p>
             <a href="<?= base_url('logout') ?>" class="logout">Logout</a>
         </div>
