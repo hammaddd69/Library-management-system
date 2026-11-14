@@ -129,5 +129,27 @@ public function delete($id)
 }
 
 
+// Search books using AJAX
+public function searchAjax()
+{
+    if (!session()->get('isLoggedIn')) {
+        return $this->response->setStatusCode(401)
+            ->setJSON(['error' => 'Please log in first.']);
+    }
+
+    $keyword = $this->request->getGet('keyword') ?? '';
+
+    $bookModel = new BookModel();
+
+    if ($keyword !== '') {
+        $books = $bookModel->searchBooks($keyword);
+    } else {
+        $books = $bookModel->findAll();
+    }
+
+    return $this->response->setJSON($books);
+}
+
+
 }
 

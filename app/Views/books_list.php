@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +23,13 @@
         .container {
             padding: 20px;
             overflow-x: auto;
+        }
+
+        #searchInput {
+            padding: 10px;
+            width: 280px;
+            max-width: 90%;
+            margin-bottom: 20px;
         }
 
         table {
@@ -48,6 +56,18 @@
         a {
             color: #243447;
         }
+
+        button {
+            cursor: pointer;
+            padding: 6px 10px;
+        }
+
+        @media (max-width: 700px) {
+            th, td {
+                padding: 7px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 
@@ -61,70 +81,66 @@
     <div class="container">
 
         <h2>Book List</h2>
-		
-		<form action="<?= base_url('books/search') ?>" method="get">
 
-    <input type="text" name="keyword"
-           placeholder="Search by title or author"
-           value="<?= esc($keyword ?? '') ?>">
+        <div>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search books..."
+                value="<?= esc($keyword ?? '') ?>"
+            >
+        </div>
 
-    <button type="submit">Search</button>
+        <table id="booksTable">
 
-</form>
-		
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Category</th>
+                    <th>Publisher</th>
+                    <th>Year</th>
+                    <th>Quantity</th>
+                    <th>Available</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>ISBN</th>
-                <th>Category</th>
-                <th>Publisher</th>
-                <th>Year</th>
-                <th>Quantity</th>
-                <th>Available</th>
-            </tr>
+            <tbody id="booksTableBody">
 
-            <?php foreach ($books as $book): ?>
-            <tr>
-                <td><?= esc($book['id']) ?></td>
-                <td><?= esc($book['title']) ?></td>
-                <td><?= esc($book['author']) ?></td>
-                <td><?= esc($book['isbn']) ?></td>
-                <td><?= esc($book['category']) ?></td>
-                <td><?= esc($book['publisher']) ?></td>
-                <td><?= esc($book['published_year']) ?></td>
-                <td><?= esc($book['quantity']) ?></td>
-                <td><?= esc($book['available']) ?></td>
-				
-					
-				<td>
-				
-				
-    <td>
-	
-<td>
+                <?php foreach ($books as $book): ?>
+                <tr>
+                    <td><?= esc($book['id']) ?></td>
+                    <td><?= esc($book['title']) ?></td>
+                    <td><?= esc($book['author']) ?></td>
+                    <td><?= esc($book['isbn']) ?></td>
+                    <td><?= esc($book['category']) ?></td>
+                    <td><?= esc($book['publisher']) ?></td>
+                    <td><?= esc($book['published_year']) ?></td>
+                    <td><?= esc($book['quantity']) ?></td>
+                    <td><?= esc($book['available']) ?></td>
 
-    <a href="<?= base_url('books/edit/' . $book['id']) ?>">Edit</a>
+                    <td>
+                        <a href="<?= base_url('books/edit/' . $book['id']) ?>">
+                            Edit
+                        </a>
 
-    
+                        <form action="<?= base_url('books/delete/' . $book['id']) ?>"
+                              method="post"
+                              style="display:inline;"
+                              onsubmit="return confirm('Are you sure you want to delete this book?')">
 
-    <form action="<?= base_url('books/delete/' . $book['id']) ?>"
-          method="post" style="display:inline;"
-          onsubmit="return confirm('Are you sure you want to delete this book?')">
+                            <?= csrf_field() ?>
 
-        <?= csrf_field() ?>
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
 
-        <button type="submit">Delete</button>
-
-    </form>
-	      
-</td>
-</td>
-</td>
-            </tr>
-            <?php endforeach; ?>
+            </tbody>
 
         </table>
 
@@ -133,6 +149,102 @@
         </p>
 
     </div>
+
+    <script>
+
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('booksTableBody');
+
+    searchInput.addEventListener('input', function() {
+
+        const keyword = this.value;
+
+        fetch('<?= base_url('books/search-ajax') ?>?keyword=' + encodeURIComponent(keyword))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Search request failed.');
+                }
+                return response.json();
+            })
+            .then(books => {
+
+                tableBody.innerHTML = '';
+
+                if (books.length === 0) {
+                    tableBody.innerHTML =
+                        '<tr><td colspan="10">No books found.</td></tr>';
+                    return;
+                }
+
+                books.forEach(book => {
+
+                    const row = document.createElement('tr');
+
+                    const values = [
+                        book.id,
+                        book.title,
+                        book.author,
+                        book.isbn || '',
+                        book.category || '',
+                        book.publisher || '',
+                        book.published_year || '',
+                        book.quantity,
+                        book.available
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value ?? '';
+                        row.appendChild(cell);
+                    });
+
+                    const actionCell = document.createElement('td');
+
+                    const editLink = document.createElement('a');
+                    editLink.href =
+                        '<?= base_url('books/edit/') ?>' + book.id;
+                    editLink.textContent = 'Edit';
+
+                    actionCell.appendChild(editLink);
+                    actionCell.appendChild(document.createTextNode(' '));
+
+                    const deleteForm = document.createElement('form');
+                    deleteForm.action =
+                        '<?= base_url('books/delete/') ?>' + book.id;
+                    deleteForm.method = 'post';
+                    deleteForm.style.display = 'inline';
+
+                    deleteForm.onsubmit = function() {
+                        return confirm('Are you sure you want to delete this book?');
+                    };
+
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '<?= csrf_token() ?>';
+                    csrfInput.value = '<?= csrf_hash() ?>';
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.type = 'submit';
+                    deleteButton.textContent = 'Delete';
+
+                    deleteForm.appendChild(csrfInput);
+                    deleteForm.appendChild(deleteButton);
+
+                    actionCell.appendChild(deleteForm);
+                    row.appendChild(actionCell);
+
+                    tableBody.appendChild(row);
+
+                });
+
+            })
+            .catch(error => {
+                console.error('Search error:', error);
+            });
+
+    });
+
+    </script>
 
 </body>
 </html>
